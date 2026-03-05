@@ -1,0 +1,785 @@
+<html lang="zh-CN"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>不瘪微鼓 - 外卖比价专家</title>
+    
+    <!-- PWA 相关标签 -->
+    <meta name="description" content="外卖比价专家，帮您省出零花钱">
+    <meta name="theme-color" content="#FF6B00">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="不瘪微鼓">
+    <link rel="apple-touch-icon" href="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/14fa20a648e64f58be0fc456439c4f98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260305195423585EF72457F081911899&rrcfp=f06b921b&x-expires=1775303670&x-signature=8ah8iRtS15k6ULMi7WUzAJwHiOA%3D">
+    <link rel="apple-touch-startup-image" href="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/14fa20a648e64f58be0fc456439c4f98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260305195423585EF72457F081911899&rrcfp=f06b921b&x-expires=1775303670&x-signature=8ah8iRtS15k6ULMi7WUzAJwHiOA%3D">
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        secondary: '#FFA500',
+                        success: '#00C851',
+                        light: '#F5F5F5',
+                        dark: '#333333',
+                        'taobao': '#FF5000',
+                        'jd': '#E1251B',
+                        'meituan': '#00A0E9'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .card-shadow {
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+            .platform-tag {
+                @apply px-2 py-1 text-xs rounded-full text-white font-medium;
+            }
+            .price-tag {
+                @apply px-2 py-1 text-xs rounded-full font-medium;
+            }
+            .price-tag-lowest {
+                @apply bg-success text-white;
+            }
+            .price-tag-normal {
+                @apply bg-gray-200 text-gray-700;
+            }
+            .discount-tag {
+                @apply px-2 py-0.5 text-xs rounded-full bg-red-50 text-red-500 font-medium;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light min-h-screen flex flex-col">
+    <!-- 顶部搜索栏 -->
+    <header class="bg-white sticky top-0 z-10 shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex items-center">
+            <div class="flex-grow relative">
+                <input type="text" placeholder="搜索商家或菜品" class="w-full pl-10 pr-4 py-2 rounded-full bg-light border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                <i class="fa fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+            <button class="ml-3 p-2 rounded-full hover:bg-light">
+                <i class="fa fa-filter text-gray-600"></i>
+            </button>
+            <button class="ml-2 p-2 rounded-full hover:bg-light">
+                <i class="fa fa-user-circle-o text-xl text-gray-600"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 位置信息 -->
+    <div id="location-bar" class="bg-white py-2 px-4 shadow-sm">
+        <div class="container mx-auto flex items-center justify-between">
+            <div class="flex items-center">
+                <i class="fa fa-map-marker text-primary mr-2"></i>
+                <span id="location-text" class="text-sm font-medium">正在获取位置...</span>
+                <i class="fa fa-chevron-down text-xs text-gray-500 ml-1"></i>
+            </div>
+            <button id="refresh-location" class="text-primary text-sm">
+                <i class="fa fa-refresh mr-1"></i>刷新
+            </button>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-4 flex-grow">
+        <!-- 瑞幸咖啡专题 -->
+        <div class="mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-dark">
+                    <img src="https://p26-doubao-search-sign.byteimg.com/isp-i18n-media/img/605190694d1c36e7c5f7ddbbc7cf7f0e~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1788264749&x-signature=wU%2BnGFEZj0RLBLIUGrzFJ6J7wLg%3D" alt="瑞幸咖啡" class="w-8 h-8 mr-2">
+                    瑞幸咖啡
+                </h2>
+                <div class="flex items-center">
+                    <button class="flex items-center text-sm text-gray-500 mr-4">
+                        <span>距离</span>
+                        <i class="fa fa-sort ml-1"></i>
+                    </button>
+                    <button class="flex items-center text-sm text-gray-500">
+                        <span>销量</span>
+                        <i class="fa fa-sort ml-1"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 门店列表 -->
+            <div class="space-y-4">
+                <!-- 门店1 -->
+                <div class="bg-white rounded-xl overflow-hidden card-shadow">
+                    <!-- 门店信息 -->
+                    <div class="p-4 border-b border-gray-100">
+                        <div class="flex items-center">
+                            <img src="https://p26-doubao-search-sign.byteimg.com/isp-i18n-media/img/605190694d1c36e7c5f7ddbbc7cf7f0e~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1788264749&x-signature=wU%2BnGFEZj0RLBLIUGrzFJ6J7wLg%3D" alt="瑞幸咖啡" class="w-12 h-12 rounded-lg object-cover">
+                            <div class="ml-3 flex-grow">
+                                <h3 class="font-bold text-dark">瑞幸咖啡（中关村软件园店）</h3>
+                                <div class="flex items-center text-xs text-gray-500 mt-1">
+                                    <span class="mr-2">月售1567</span>
+                                    <span class="mr-2">|</span>
+                                    <span class="flex items-center">
+                                        <i class="fa fa-star text-yellow-400 mr-1"></i>4.7
+                                    </span>
+                                    <span class="mr-2">|</span>
+                                    <span>距离0.8km</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-gray-500">起送价</div>
+                                <div class="text-sm font-medium">¥15</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 平台价格对比 -->
+                        <div class="grid grid-cols-3 gap-2 mt-3">
+                            <div class="bg-light rounded-lg p-2 text-center">
+                                <div class="text-xs text-gray-500 mb-1">淘宝闪购</div>
+                                <div class="text-success font-bold">¥15起</div>
+                                <div class="text-xs mt-1">
+                                    <span class="discount-tag">满30减10</span>
+                                </div>
+                            </div>
+                            <div class="bg-light rounded-lg p-2 text-center">
+                                <div class="text-xs text-gray-500 mb-1">京东闪送</div>
+                                <div class="text-gray-700 font-bold">¥18起</div>
+                                <div class="text-xs mt-1">
+                                    <span class="discount-tag">满40减12</span>
+                                </div>
+                            </div>
+                            <div class="bg-light rounded-lg p-2 text-center">
+                                <div class="text-xs text-gray-500 mb-1">美团外卖</div>
+                                <div class="text-gray-700 font-bold">¥16起</div>
+                                <div class="text-xs mt-1">
+                                    <span class="discount-tag">会员减8</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 商品列表 -->
+                    <div class="divide-y divide-gray-100">
+                        <!-- 商品1 -->
+                        <div class="p-4">
+                            <div class="flex">
+                                <div class="w-16 h-16 bg-light rounded-lg flex-shrink-0">
+                                    <img src="https://p26-doubao-search-sign.byteimg.com/isp-i18n-media/img/605190694d1c36e7c5f7ddbbc7cf7f0e~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1788264749&x-signature=wU%2BnGFEZj0RLBLIUGrzFJ6J7wLg%3D" alt="生椰拿铁" class="w-full h-full object-cover rounded-lg">
+                                </div>
+                                <div class="ml-3 flex-grow">
+                                    <h4 class="font-medium text-dark">生椰拿铁</h4>
+                                    <p class="text-xs text-gray-500 mt-1">椰香浓郁，口感丝滑</p>
+                                    
+                                    <!-- 价格对比 -->
+                                    <div class="flex items-center mt-2">
+                                        <div class="flex-1">
+                                            <div class="flex items-center">
+                                                <span class="text-success font-bold mr-1">¥19.9</span>
+                                                <span class="text-xs text-gray-500 line-through">¥25</span>
+                                                <span class="ml-1 text-xs text-success">淘宝闪购</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1 text-center">
+                                            <div class="text-gray-700 font-bold">¥22</div>
+                                            <div class="text-xs text-gray-500">京东闪送</div>
+                                        </div>
+                                        <div class="flex-1 text-right">
+                                            <div class="text-gray-700 font-bold">¥20</div>
+                                            <div class="text-xs text-gray-500">美团外卖</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 购买按钮 -->
+                            <div class="mt-3 flex justify-end">
+                                <button class="buy-button px-4 py-1.5 bg-primary text-white text-sm rounded-full" data-product="生椰拿铁" data-price="19.9" data-platform="淘宝闪购">
+                                    立即购买
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 商品2 -->
+                        <div class="p-4">
+                            <div class="flex">
+                                <div class="w-16 h-16 bg-light rounded-lg flex-shrink-0">
+                                    <img src="https://p26-doubao-search-sign.byteimg.com/isp-i18n-media/img/605190694d1c36e7c5f7ddbbc7cf7f0e~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1788264749&x-signature=wU%2BnGFEZj0RLBLIUGrzFJ6J7wLg%3D" alt="陨石拿铁" class="w-full h-full object-cover rounded-lg">
+                                </div>
+                                <div class="ml-3 flex-grow">
+                                    <h4 class="font-medium text-dark">陨石拿铁</h4>
+                                    <p class="text-xs text-gray-500 mt-1">黑糖风味，口感丰富</p>
+                                    
+                                    <!-- 价格对比 -->
+                                    <div class="flex items-center mt-2">
+                                        <div class="flex-1">
+                                            <div class="text-gray-700 font-bold">¥21</div>
+                                            <div class="text-xs text-gray-500">淘宝闪购</div>
+                                        </div>
+                                        <div class="flex-1 text-center">
+                                            <div class="flex items-center justify-center">
+                                                <span class="text-success font-bold mr-1">¥18.9</span>
+                                                <span class="text-xs text-gray-500 line-through">¥23</span>
+                                            </div>
+                                            <div class="text-xs text-success">京东闪送</div>
+                                        </div>
+                                        <div class="flex-1 text-right">
+                                            <div class="text-gray-700 font-bold">¥20</div>
+                                            <div class="text-xs text-gray-500">美团外卖</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 购买按钮 -->
+                            <div class="mt-3 flex justify-end">
+                                <button class="buy-button px-4 py-1.5 bg-primary text-white text-sm rounded-full" data-product="陨石拿铁" data-price="18.9" data-platform="京东闪送">
+                                    立即购买
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 商品3 -->
+                        <div class="p-4">
+                            <div class="flex">
+                                <div class="w-16 h-16 bg-light rounded-lg flex-shrink-0">
+                                    <img src="https://p26-doubao-search-sign.byteimg.com/isp-i18n-media/img/605190694d1c36e7c5f7ddbbc7cf7f0e~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1788264749&x-signature=wU%2BnGFEZj0RLBLIUGrzFJ6J7wLg%3D" alt="丝绒拿铁" class="w-full h-full object-cover rounded-lg">
+                                </div>
+                                <div class="ml-3 flex-grow">
+                                    <h4 class="font-medium text-dark">丝绒拿铁</h4>
+                                    <p class="text-xs text-gray-500 mt-1">丝滑口感，醇厚风味</p>
+                                    
+                                    <!-- 价格对比 -->
+                                    <div class="flex items-center mt-2">
+                                        <div class="flex-1">
+                                            <div class="text-gray-700 font-bold">¥22</div>
+                                            <div class="text-xs text-gray-500">淘宝闪购</div>
+                                        </div>
+                                        <div class="flex-1 text-center">
+                                            <div class="text-gray-700 font-bold">¥21</div>
+                                            <div class="text-xs text-gray-500">京东闪送</div>
+                                        </div>
+                                        <div class="flex-1 text-right">
+                                            <div class="flex items-center justify-end">
+                                                <span class="text-success font-bold mr-1">¥19.9</span>
+                                                <span class="text-xs text-gray-500 line-through">¥24</span>
+                                            </div>
+                                            <div class="text-xs text-success text-right">美团外卖</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 购买按钮 -->
+                            <div class="mt-3 flex justify-end">
+                                <button class="buy-button px-4 py-1.5 bg-primary text-white text-sm rounded-full" data-product="丝绒拿铁" data-price="19.9" data-platform="美团外卖">
+                                    立即购买
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 门店2 -->
+                <div class="bg-white rounded-xl overflow-hidden card-shadow">
+                    <!-- 门店信息 -->
+                    <div class="p-4 border-b border-gray-100">
+                        <div class="flex items-center">
+                            <img src="https://p26-doubao-search-sign.byteimg.com/isp-i18n-media/img/605190694d1c36e7c5f7ddbbc7cf7f0e~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1788264749&x-signature=wU%2BnGFEZj0RLBLIUGrzFJ6J7wLg%3D" alt="瑞幸咖啡" class="w-12 h-12 rounded-lg object-cover">
+                            <div class="ml-3 flex-grow">
+                                <h3 class="font-bold text-dark">瑞幸咖啡（中关村大街店）</h3>
+                                <div class="flex items-center text-xs text-gray-500 mt-1">
+                                    <span class="mr-2">月售1234</span>
+                                    <span class="mr-2">|</span>
+                                    <span class="flex items-center">
+                                        <i class="fa fa-star text-yellow-400 mr-1"></i>4.6
+                                    </span>
+                                    <span class="mr-2">|</span>
+                                    <span>距离1.5km</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-gray-500">起送价</div>
+                                <div class="text-sm font-medium">¥20</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 平台价格对比 -->
+                        <div class="grid grid-cols-3 gap-2 mt-3">
+                            <div class="bg-light rounded-lg p-2 text-center">
+                                <div class="text-xs text-gray-500 mb-1">淘宝闪购</div>
+                                <div class="text-gray-700 font-bold">¥20起</div>
+                                <div class="text-xs mt-1">
+                                    <span class="discount-tag">满35减12</span>
+                                </div>
+                            </div>
+                            <div class="bg-light rounded-lg p-2 text-center">
+                                <div class="text-xs text-gray-500 mb-1">京东闪送</div>
+                                <div class="text-success font-bold">¥18起</div>
+                                <div class="text-xs mt-1">
+                                    <span class="discount-tag">满40减15</span>
+                                </div>
+                            </div>
+                            <div class="bg-light rounded-lg p-2 text-center">
+                                <div class="text-xs text-gray-500 mb-1">美团外卖</div>
+                                <div class="text-gray-700 font-bold">¥19起</div>
+                                <div class="text-xs mt-1">
+                                    <span class="discount-tag">会员减10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 商品列表 -->
+                    <div class="divide-y divide-gray-100">
+                        <!-- 商品1 -->
+                        <div class="p-4">
+                            <div class="flex">
+                                <div class="w-16 h-16 bg-light rounded-lg flex-shrink-0">
+                                    <img src="https://p26-doubao-search-sign.byteimg.com/isp-i18n-media/img/605190694d1c36e7c5f7ddbbc7cf7f0e~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1788264749&x-signature=wU%2BnGFEZj0RLBLIUGrzFJ6J7wLg%3D" alt="生椰拿铁" class="w-full h-full object-cover rounded-lg">
+                                </div>
+                                <div class="ml-3 flex-grow">
+                                    <h4 class="font-medium text-dark">生椰拿铁</h4>
+                                    <p class="text-xs text-gray-500 mt-1">椰香浓郁，口感丝滑</p>
+                                    
+                                    <!-- 价格对比 -->
+                                    <div class="flex items-center mt-2">
+                                        <div class="flex-1">
+                                            <div class="text-gray-700 font-bold">¥22</div>
+                                            <div class="text-xs text-gray-500">淘宝闪购</div>
+                                        </div>
+                                        <div class="flex-1 text-center">
+                                            <div class="flex items-center justify-center">
+                                                <span class="text-success font-bold mr-1">¥19.9</span>
+                                                <span class="text-xs text-gray-500 line-through">¥25</span>
+                                            </div>
+                                            <div class="text-xs text-success">京东闪送</div>
+                                        </div>
+                                        <div class="flex-1 text-right">
+                                            <div class="text-gray-700 font-bold">¥21</div>
+                                            <div class="text-xs text-gray-500">美团外卖</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 购买按钮 -->
+                            <div class="mt-3 flex justify-end">
+                                <button class="buy-button px-4 py-1.5 bg-primary text-white text-sm rounded-full" data-product="生椰拿铁" data-price="19.9" data-platform="京东闪送">
+                                    立即购买
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 商品2 -->
+                        <div class="p-4">
+                            <div class="flex">
+                                <div class="w-16 h-16 bg-light rounded-lg flex-shrink-0">
+                                    <img src="https://p26-doubao-search-sign.byteimg.com/isp-i18n-media/img/605190694d1c36e7c5f7ddbbc7cf7f0e~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1788264749&x-signature=wU%2BnGFEZj0RLBLIUGrzFJ6J7wLg%3D" alt="美式咖啡" class="w-full h-full object-cover rounded-lg">
+                                </div>
+                                <div class="ml-3 flex-grow">
+                                    <h4 class="font-medium text-dark">美式咖啡</h4>
+                                    <p class="text-xs text-gray-500 mt-1">经典风味，醇厚回甘</p>
+                                    
+                                    <!-- 价格对比 -->
+                                    <div class="flex items-center mt-2">
+                                        <div class="flex-1">
+                                            <div class="text-gray-700 font-bold">¥15</div>
+                                            <div class="text-xs text-gray-500">淘宝闪购</div>
+                                        </div>
+                                        <div class="flex-1 text-center">
+                                            <div class="flex items-center justify-center">
+                                                <span class="text-success font-bold mr-1">¥12.9</span>
+                                                <span class="text-xs text-gray-500 line-through">¥16</span>
+                                            </div>
+                                            <div class="text-xs text-success">京东闪送</div>
+                                        </div>
+                                        <div class="flex-1 text-right">
+                                            <div class="text-gray-700 font-bold">¥14</div>
+                                            <div class="text-xs text-gray-500">美团外卖</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 购买按钮 -->
+                            <div class="mt-3 flex justify-end">
+                                <button class="buy-button px-4 py-1.5 bg-primary text-white text-sm rounded-full" data-product="美式咖啡" data-price="12.9" data-platform="京东闪送">
+                                    立即购买
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航栏 -->
+    <footer class="bg-white border-t border-gray-200 sticky bottom-0 z-10">
+        <div class="container mx-auto">
+            <div class="flex justify-around">
+                <button class="flex flex-col items-center py-2 px-4 text-primary">
+                    <i class="fa fa-home text-xl"></i>
+                    <span class="text-xs mt-1">首页</span>
+                </button>
+                <button class="flex flex-col items-center py-2 px-4 text-gray-500">
+                    <i class="fa fa-search text-xl"></i>
+                    <span class="text-xs mt-1">搜索</span>
+                </button>
+                <button class="flex flex-col items-center py-2 px-4 text-gray-500">
+                    <i class="fa fa-list-alt text-xl"></i>
+                    <span class="text-xs mt-1">订单</span>
+                </button>
+                <button class="flex flex-col items-center py-2 px-4 text-gray-500">
+                    <i class="fa fa-user-o text-xl"></i>
+                    <span class="text-xs mt-1">我的</span>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        /* 隐藏滚动条但保留功能 */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+
+    <script>
+        // 注册 Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker 注册成功:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker 注册失败:', error);
+                    });
+            });
+        }
+        
+        // 模拟商家数据
+        const merchants = [
+            {
+                id: 1,
+                name: "肯德基",
+                logo: "https://p3-doubao-search-sign.byteimg.com/labis/1712c07f0ce99381a14c8eb3593fe44d~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1788263677&x-signature=e6uHkTooId%2BBCjZXsDaBOMXruvc%3D",
+                sales: 1234,
+                rating: 4.5,
+                distance: "1.2km",
+                platforms: {
+                    taobao: {
+                        minPrice: 20,
+                        discount: "满30减10",
+                        deliveryFee: 5
+                    },
+                    jd: {
+                        minPrice: 25,
+                        discount: "新用户减15",
+                        deliveryFee: 0
+                    },
+                    meituan: {
+                        minPrice: 22,
+                        discount: "会员红包",
+                        deliveryFee: 3
+                    }
+                },
+                popularItems: [
+                    {
+                        name: "原味鸡",
+                        prices: {
+                            taobao: 12.9,
+                            jd: 15,
+                            meituan: 14
+                        }
+                    },
+                    {
+                        name: "香辣鸡腿堡",
+                        prices: {
+                            taobao: 22,
+                            jd: 18.9,
+                            meituan: 20
+                        }
+                    },
+                    {
+                        name: "超级塔可",
+                        prices: {
+                            taobao: 19,
+                            jd: 18,
+                            meituan: 16.9
+                        }
+                    }
+                ]
+            },
+            // 其他商家数据...
+        ];
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查用户是否已登录
+            const authStatus = JSON.parse(localStorage.getItem('authStatus')) || {};
+            
+            // 如果用户未授权任何平台，重定向到登录页面
+            if (!authStatus.taobao && !authStatus.jd && !authStatus.meituan) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // 搜索功能
+            const searchInput = document.querySelector('input[type="text"]');
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                // 这里可以实现搜索逻辑
+                console.log('搜索:', searchTerm);
+            });
+            
+            // 筛选按钮点击事件
+            const filterButtons = document.querySelectorAll('.flex.overflow-x-auto button');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除所有按钮的选中状态
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('bg-primary', 'text-white');
+                        btn.classList.add('bg-white', 'text-gray-700');
+                    });
+                    
+                    // 设置当前按钮为选中状态
+                    this.classList.remove('bg-white', 'text-gray-700');
+                    this.classList.add('bg-primary', 'text-white');
+                    
+                    // 这里可以实现筛选逻辑
+                    const category = this.textContent.trim();
+                    console.log('筛选分类:', category);
+                });
+            });
+            
+            // 排序按钮点击事件
+            const sortButtons = document.querySelectorAll('button.flex.items-center.text-sm.text-gray-500');
+            sortButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const sortType = this.querySelector('span').textContent.trim();
+                    console.log('排序方式:', sortType);
+                    
+                    // 这里可以实现排序逻辑
+                    // 示例：按距离排序
+                    if (sortType === '距离') {
+                        // 排序逻辑
+                    }
+                    
+                    // 示例：按销量排序
+                    if (sortType === '销量') {
+                        // 排序逻辑
+                    }
+                });
+            });
+            
+            // 商家卡片点击事件
+            const merchantCards = document.querySelectorAll('.bg-white.rounded-xl.p-4.mb-4.card-shadow');
+            merchantCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // 获取商家名称
+                    const merchantName = this.querySelector('h3').textContent;
+                    console.log('点击商家:', merchantName);
+                    
+                    // 这里可以跳转到商家详情页
+                    // window.location.href = `merchant.html?id=${merchantId}`;
+                });
+            });
+            
+            // 底部导航栏点击事件
+            const navButtons = document.querySelectorAll('footer button');
+            navButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除所有按钮的选中状态
+                    navButtons.forEach(btn => {
+                        btn.classList.remove('text-primary');
+                        btn.classList.add('text-gray-500');
+                    });
+                    
+                    // 设置当前按钮为选中状态
+                    this.classList.remove('text-gray-500');
+                    this.classList.add('text-primary');
+                    
+                    // 获取导航项
+                    const navItem = this.querySelector('span').textContent.trim();
+                    console.log('导航到:', navItem);
+                    
+                    // 这里可以实现页面切换逻辑
+                    if (navItem === '首页') {
+                        // 已在首页
+                    } else if (navItem === '搜索') {
+                        // 跳转到搜索页
+                    } else if (navItem === '订单') {
+                        // 跳转到订单页
+                    } else if (navItem === '我的') {
+                        // 跳转到个人中心页
+                    }
+                });
+            });
+        });
+        
+        // 获取位置信息
+        function getLocation() {
+            const locationText = document.getElementById('location-text');
+            locationText.textContent = '正在获取位置...';
+            
+            // 模拟获取位置
+            setTimeout(() => {
+                locationText.textContent = '中关村软件园';
+            }, 1000);
+        }
+        
+        // 购买按钮点击事件
+        const buyButtons = document.querySelectorAll('.buy-button');
+        buyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const product = this.getAttribute('data-product');
+                const price = this.getAttribute('data-price');
+                const platform = this.getAttribute('data-platform');
+                const store = this.closest('.bg-white').querySelector('h3').textContent;
+                
+                // 填充订单信息
+                document.getElementById('order-product-name').textContent = product;
+                document.getElementById('order-product-price').textContent = `¥${price}`;
+                document.getElementById('order-platform').textContent = platform;
+                document.getElementById('order-platform').className = `bg-${platform === '淘宝闪购' ? 'taobao' : platform === '京东闪送' ? 'jd' : 'meituan'} text-white px-2 py-0.5 rounded-full text-xs`;
+                document.getElementById('order-store').textContent = store;
+                document.getElementById('order-total-price').textContent = `¥${(parseFloat(price) + 5 - 3).toFixed(1)}`;
+                
+                // 显示支付弹窗
+                document.getElementById('payment-modal').classList.remove('hidden');
+            });
+        });
+        
+        // 关闭支付弹窗按钮点击事件
+        document.getElementById('close-payment-modal').addEventListener('click', function() {
+            document.getElementById('payment-modal').classList.add('hidden');
+        });
+        
+        // 确认支付按钮点击事件
+        document.getElementById('confirm-payment').addEventListener('click', function() {
+            // 隐藏支付弹窗
+            document.getElementById('payment-modal').classList.add('hidden');
+            
+            // 显示支付成功弹窗
+            document.getElementById('payment-success-modal').classList.remove('hidden');
+        });
+        
+        // 关闭成功弹窗按钮点击事件
+        document.getElementById('close-success-modal').addEventListener('click', function() {
+            document.getElementById('payment-success-modal').classList.add('hidden');
+        });
+        
+        // 刷新位置按钮点击事件
+        document.getElementById('refresh-location').addEventListener('click', function() {
+            getLocation();
+        });
+    </script>
+
+    <!-- 支付弹窗 -->
+    <div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-xl w-11/12 max-w-md mx-auto overflow-hidden">
+            <!-- 弹窗头部 -->
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-bold">确认订单</h3>
+                <button id="close-payment-modal" class="text-gray-500">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- 商品信息 -->
+            <div class="p-4">
+                <div class="flex items-center mb-4">
+                    <img src="https://p26-doubao-search-sign.byteimg.com/isp-i18n-media/img/605190694d1c36e7c5f7ddbbc7cf7f0e~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1788264749&x-signature=wU%2BnGFEZj0RLBLIUGrzFJ6J7wLg%3D" alt="瑞幸咖啡" class="w-12 h-12 rounded-lg object-cover">
+                    <div class="ml-3">
+                        <h4 id="order-product-name" class="font-medium">生椰拿铁</h4>
+                        <div class="flex items-center text-xs text-gray-500 mt-1">
+                            <span id="order-platform" class="bg-primary text-white px-2 py-0.5 rounded-full">淘宝闪购</span>
+                            <span class="ml-2" id="order-store">瑞幸咖啡（中关村软件园店）</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 价格信息 -->
+                <div class="bg-light rounded-lg p-3 mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm">商品金额</span>
+                        <span class="font-medium" id="order-product-price">¥19.9</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm">配送费</span>
+                        <span class="font-medium">¥5</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm">优惠</span>
+                        <span class="text-success">-¥3</span>
+                    </div>
+                    <div class="border-t border-gray-300 mt-2 pt-2 flex justify-between items-center">
+                        <span class="font-medium">实付金额</span>
+                        <span class="font-bold text-lg text-primary" id="order-total-price">¥21.9</span>
+                    </div>
+                </div>
+                
+                <!-- 支付方式 -->
+                <div class="mb-4">
+                    <h5 class="text-sm font-medium mb-2">选择支付方式</h5>
+                    <div class="space-y-2">
+                        <label class="flex items-center justify-between p-3 border border-gray-200 rounded-lg cursor-pointer">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white">
+                                    <i class="fa fa-wechat"></i>
+                                </div>
+                                <span class="ml-2">微信支付</span>
+                            </div>
+                            <input type="radio" name="payment-method" value="wechat" class="form-radio text-primary" checked>
+                        </label>
+                        <label class="flex items-center justify-between p-3 border border-gray-200 rounded-lg cursor-pointer">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
+                                    <i class="fa fa-credit-card"></i>
+                                </div>
+                                <span class="ml-2">银行卡支付</span>
+                            </div>
+                            <input type="radio" name="payment-method" value="bank" class="form-radio text-primary">
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- 支付按钮 -->
+                <button id="confirm-payment" class="w-full bg-primary text-white py-3 rounded-lg font-bold">
+                    确认支付
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 支付成功弹窗 -->
+    <div id="payment-success-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-xl w-11/12 max-w-md mx-auto p-6 text-center">
+            <div class="w-20 h-20 rounded-full bg-success bg-opacity-20 flex items-center justify-center mx-auto mb-4">
+                <i class="fa fa-check text-4xl text-success"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">支付成功</h3>
+            <p class="text-gray-500 mb-6">您的订单已提交，正在为您准备</p>
+            <button id="close-success-modal" class="w-full bg-primary text-white py-3 rounded-lg font-bold">
+                完成
+            </button>
+        </div>
+    </div>
+
+</body></html>

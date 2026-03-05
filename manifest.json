@@ -1,0 +1,115 @@
+{
+  "name": "不瘪微鼓",
+  "short_name": "不瘪微鼓",
+  "description": "外卖比价专家，帮您省出零花钱",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FF6B00",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/14fa20a648e64f58be0fc456439c4f98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260305195423585EF72457F081911899&rrcfp=f06b921b&x-expires=1775303670&x-signature=8ah8iRtS15k6ULMi7WUzAJwHiOA%3D",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/14fa20a648e64f58be0fc456439c4f98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260305195423585EF72457F081911899&rrcfp=f06b921b&x-expires=1775303670&x-signature=8ah8iRtS15k6ULMi7WUzAJwHiOA%3D",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "开始比价",
+      "short_name": "比价",
+      "description": "立即开始外卖比价",
+      "url": "/main.html",
+      "icons": [{ "src": "https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/14fa20a648e64f58be0fc456439c4f98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260305195423585EF72457F081911899&rrcfp=f06b921b&x-expires=1775303670&x-signature=8ah8iRtS15k6ULMi7WUzAJwHiOA%3D", "sizes": "96x96" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "categories": ["food", "shopping", "utilities"],
+  "screenshots": [],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "image",
+          "accept": ["image/*"]
+        }
+      ]
+    }
+  },
+  "short_name": "不瘪微鼓",
+  "name": "不瘪微鼓 - 外卖比价专家",
+  "description": "专业的外卖比价工具，帮您在淘宝闪购、京东闪送和美团外卖三大平台找到最优惠的价格",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "scope": "/",
+  "start_url": "/index.html?utm_source=pwa",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#FF6B00",
+  "background_color": "#FFFFFF",
+  "icons": [
+    {
+      "src": "https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/14fa20a648e64f58be0fc456439c4f98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260305195423585EF72457F081911899&rrcfp=f06b921b&x-expires=1775303670&x-signature=8ah8iRtS15k6ULMi7WUzAJwHiOA%3D",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/14fa20a648e64f58be0fc456439c4f98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260305195423585EF72457F081911899&rrcfp=f06b921b&x-expires=1775303670&x-signature=8ah8iRtS15k6ULMi7WUzAJwHiOA%3D",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/14fa20a648e64f58be0fc456439c4f98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260305195423585EF72457F081911899&rrcfp=f06b921b&x-expires=1775303670&x-signature=8ah8iRtS15k6ULMi7WUzAJwHiOA%3D",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/14fa20a648e64f58be0fc456439c4f98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260305195423585EF72457F081911899&rrcfp=f06b921b&x-expires=1775303670&x-signature=8ah8iRtS15k6ULMi7WUzAJwHiOA%3D",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/14fa20a648e64f58be0fc456439c4f98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260305195423585EF72457F081911899&rrcfp=f06b921b&x-expires=1775303670&x-signature=8ah8iRtS15k6ULMi7WUzAJwHiOA%3D",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/14fa20a648e64f58be0fc456439c4f98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260305195423585EF72457F081911899&rrcfp=f06b921b&x-expires=1775303670&x-signature=8ah8iRtS15k6ULMi7WUzAJwHiOA%3D",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/14fa20a648e64f58be0fc456439c4f98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260305195423585EF72457F081911899&rrcfp=f06b921b&x-expires=1775303670&x-signature=8ah8iRtS15k6ULMi7WUzAJwHiOA%3D",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/14fa20a648e64f58be0fc456439c4f98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260305195423585EF72457F081911899&rrcfp=f06b921b&x-expires=1775303670&x-signature=8ah8iRtS15k6ULMi7WUzAJwHiOA%3D",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

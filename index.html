@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>不瘪微鼓 - 外卖比价专家</title>
+    
+    <!-- PWA 相关标签 -->
+    <meta name="description" content="外卖比价专家，帮您省出零花钱">
+    <meta name="theme-color" content="#FF6B00">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="不瘪微鼓">
+    <link rel="apple-touch-icon" href="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/14fa20a648e64f58be0fc456439c4f98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260305195423585EF72457F081911899&rrcfp=f06b921b&x-expires=1775303670&x-signature=8ah8iRtS15k6ULMi7WUzAJwHiOA%3D">
+    <link rel="apple-touch-startup-image" href="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/14fa20a648e64f58be0fc456439c4f98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260305195423585EF72457F081911899&rrcfp=f06b921b&x-expires=1775303670&x-signature=8ah8iRtS15k6ULMi7WUzAJwHiOA%3D">
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        secondary: '#FFA500',
+                        success: '#00C851',
+                        light: '#F5F5F5',
+                        dark: '#333333'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .btn-primary {
+                @apply bg-primary text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-opacity-90 transition-all duration-300;
+            }
+            .btn-secondary {
+                @apply bg-white text-primary font-bold py-3 px-6 rounded-lg shadow-md border border-primary hover:bg-light transition-all duration-300;
+            }
+            .input-field {
+                @apply w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light min-h-screen flex flex-col">
+    <div class="container mx-auto px-4 py-8 flex-grow flex flex-col">
+        <!-- Logo和标题 -->
+        <div class="text-center mb-12 mt-8">
+            <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/14fa20a648e64f58be0fc456439c4f98~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260305195423585EF72457F081911899&rrcfp=f06b921b&x-expires=1775303670&x-signature=8ah8iRtS15k6ULMi7WUzAJwHiOA%3D" alt="不瘪微鼓" class="w-24 h-24 mx-auto mb-4">
+            <h1 class="text-4xl font-bold text-primary text-shadow">不瘪微鼓</h1>
+            <p class="text-gray-600 mt-2 text-lg">外卖比价专家，帮您省出零花钱</p>
+        </div>
+
+        <!-- 登录卡片 -->
+        <div class="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-center mb-6 text-dark">平台授权登录</h2>
+            <p class="text-gray-500 text-center mb-8">请授权登录以下平台账号，以便我们为您对比价格</p>
+            
+            <!-- 平台选择按钮 -->
+            <div class="space-y-4 mb-8">
+                <button id="taobao-login" class="flex items-center justify-between w-full p-4 border border-gray-200 rounded-lg hover:bg-light transition-colors">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-white">
+                            <i class="fa fa-shopping-bag text-xl"></i>
+                        </div>
+                        <span class="ml-3 font-medium">淘宝闪购</span>
+                    </div>
+                    <i class="fa fa-chevron-right text-gray-400"></i>
+                </button>
+                
+                <button id="jd-login" class="flex items-center justify-between w-full p-4 border border-gray-200 rounded-lg hover:bg-light transition-colors">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white">
+                            <i class="fa fa-shopping-cart text-xl"></i>
+                        </div>
+                        <span class="ml-3 font-medium">京东闪送</span>
+                    </div>
+                    <i class="fa fa-chevron-right text-gray-400"></i>
+                </button>
+                
+                <button id="meituan-login" class="flex items-center justify-between w-full p-4 border border-gray-200 rounded-lg hover:bg-light transition-colors">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-yellow-500 flex items-center justify-center text-white">
+                            <i class="fa fa-cutlery text-xl"></i>
+                        </div>
+                        <span class="ml-3 font-medium">美团外卖</span>
+                    </div>
+                    <i class="fa fa-chevron-right text-gray-400"></i>
+                </button>
+            </div>
+            
+            <!-- 授权状态显示 -->
+            <div id="auth-status" class="mb-6 hidden">
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <i class="fa fa-check-circle text-green-500 text-xl"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-green-800" id="auth-title">授权成功</h3>
+                            <div class="mt-1 text-sm text-green-700" id="auth-message">
+                                您已成功授权登录
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 登录按钮 -->
+            <button id="login-btn" class="btn-primary w-full flex justify-center items-center">
+                <span>开始比价</span>
+                <i class="fa fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+        
+        <!-- 底部信息 -->
+        <div class="text-center text-gray-500 text-sm mt-auto">
+            <p>登录即表示您同意我们的<a href="#" class="text-primary">用户协议</a>和<a href="#" class="text-primary">隐私政策</a></p>
+            <p class="mt-2">© 2026 不瘪微鼓 版权所有</p>
+        </div>
+    </div>
+
+    <script>
+        // 注册 Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker 注册成功:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker 注册失败:', error);
+                    });
+            });
+        }
+        
+        // 模拟平台授权状态
+        const authStatus = {
+            taobao: false,
+            jd: false,
+            meituan: false
+        };
+        
+        // 平台登录按钮点击事件
+        document.getElementById('taobao-login').addEventListener('click', function() {
+            // 尝试打开淘宝APP进行授权
+            openAppAuth('taobao', '淘宝闪购', 'taobao://taobao.com/auth?appId=your_app_id&redirectUrl=your_redirect_url');
+        });
+        
+        document.getElementById('jd-login').addEventListener('click', function() {
+            // 尝试打开京东APP进行授权
+            openAppAuth('jd', '京东闪送', 'openapp.jdmobile://virtual?params={"category":"jump","des":"jshopMain","shopId":"your_shop_id","action":"toAuthPage"}');
+        });
+        
+        document.getElementById('meituan-login').addEventListener('click', function() {
+            // 尝试打开美团APP进行授权
+            openAppAuth('meituan', '美团外卖', 'meituanwaimai://waimai.meituan.com/auth?appId=your_app_id&redirectUrl=your_redirect_url');
+        });
+        
+        // 打开APP授权
+        function openAppAuth(platform, platformName, urlScheme) {
+            // 显示加载状态
+            const button = document.getElementById(`${platform}-login`);
+            const originalContent = button.innerHTML;
+            button.innerHTML = `
+                <div class="flex items-center justify-between w-full">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                            <i class="fa fa-spinner fa-spin text-gray-500"></i>
+                        </div>
+                        <span class="ml-3 font-medium text-gray-500">正在打开${platformName}...</span>
+                    </div>
+                </div>
+            `;
+            button.disabled = true;
+            
+            // 尝试打开APP
+            if (typeof window !== 'undefined') {
+                // 创建一个隐藏的iframe来尝试打开APP
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = urlScheme;
+                document.body.appendChild(iframe);
+                
+                // 设置定时器，如果在一定时间内没有返回，则说明APP可能没有安装
+                setTimeout(() => {
+                    document.body.removeChild(iframe);
+                    
+                    // 显示提示
+                    const authStatusEl = document.getElementById('auth-status');
+                    const authTitle = document.getElementById('auth-title');
+                    const authMessage = document.getElementById('auth-message');
+                    
+                    authTitle.textContent = '提示';
+                    authMessage.textContent = `无法打开${platformName}APP，请确保已安装该应用`;
+                    authStatusEl.classList.remove('hidden');
+                    
+                    // 恢复按钮状态
+                    button.innerHTML = originalContent;
+                    button.disabled = false;
+                    
+                    // 3秒后隐藏提示
+                    setTimeout(() => {
+                        authStatusEl.classList.add('hidden');
+                    }, 3000);
+                }, 2000);
+            }
+            
+            // 模拟授权成功（实际应用中应该通过回调URL获取授权结果）
+            setTimeout(() => {
+                // 更新授权状态
+                authStatus[platform] = true;
+                
+                // 恢复按钮状态并更新样式
+                button.innerHTML = `
+                    <div class="flex items-center justify-between w-full">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white">
+                                <i class="fa fa-check text-lg"></i>
+                            </div>
+                            <span class="ml-3 font-medium text-green-600">${platformName} (已授权)</span>
+                        </div>
+                        <i class="fa fa-check-circle text-green-500"></i>
+                    </div>
+                `;
+                
+                // 显示授权成功提示
+                const authStatusEl = document.getElementById('auth-status');
+                const authTitle = document.getElementById('auth-title');
+                const authMessage = document.getElementById('auth-message');
+                
+                authTitle.textContent = '授权成功';
+                authMessage.textContent = `您已成功授权${platformName}账号`;
+                authStatusEl.classList.remove('hidden');
+                
+                // 3秒后隐藏提示
+                setTimeout(() => {
+                    authStatusEl.classList.add('hidden');
+                }, 3000);
+            }, 3000);
+        }
+        
+        // 登录按钮点击事件
+        document.getElementById('login-btn').addEventListener('click', function() {
+            // 检查是否至少授权了一个平台
+            const hasAuth = authStatus.taobao || authStatus.jd || authStatus.meituan;
+            
+            if (!hasAuth) {
+                // 显示提示
+                const authStatusEl = document.getElementById('auth-status');
+                const authTitle = document.getElementById('auth-title');
+                const authMessage = document.getElementById('auth-message');
+                
+                authTitle.textContent = '授权提示';
+                authMessage.textContent = '请至少授权一个外卖平台账号';
+                authStatusEl.classList.remove('hidden');
+                
+                // 3秒后隐藏提示
+                setTimeout(() => {
+                    authStatusEl.classList.add('hidden');
+                }, 3000);
+                
+                return;
+            }
+            
+            // 保存授权状态到localStorage
+            localStorage.setItem('authStatus', JSON.stringify(authStatus));
+            
+            // 跳转到主页面
+            window.location.href = 'main.html';
+        });
+    </script>
+</body>
+</html>
